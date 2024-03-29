@@ -218,6 +218,101 @@ body{
 
 }
 
+textarea:focus, input:focus{
+    outline: none;
+}
+
+.modalBox{
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 99;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    border: 1px solid var(--primary-clr);
+    transition: all .3s ease-in-out;
+
+
+    .formHolder{
+        margin: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }   
+    .close{
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right:10px;
+
+        /* display:flex; */
+    }
+
+    .modalContent{
+        position: relative;
+        background: var(--primary-clr);
+        width: 560px;
+        max-width: 96%;
+    }
+    
+    .row{
+        margin: 10px;
+        display: flex;
+        align-content: center;
+        justify-content: flext-start;
+
+        .event-name{
+            width: 100%;
+            padding: 10px;
+
+        }
+
+        .event-desc{
+            padding: 5px;
+
+        }
+
+        .event-date-from{
+            margin-right: 20px;
+            padding: 5px;
+            
+        }
+        .event-date-to{
+            padding: 10px;
+            
+        }
+
+        .saveChecklist{
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            color: var(--primary-clr);
+            font-weight: 700;
+            cursor: pointer;
+        }
+    }
+    .action{
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+  
+    }
+
+}
+
+.active{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
 
 
 

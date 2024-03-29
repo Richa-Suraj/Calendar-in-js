@@ -2,9 +2,12 @@ const calendar= document.querySelector('.calendar')
 const date= document.querySelector('.date')
 const daysContainer= document.querySelector('.days')
 const week = document.querySelector('.weekdays')
-// const prev= document.querySelector('.prev')
-// const next= document.querySelector('.next')
 const todayBtn = document.querySelector('.todayBtn')
+const modal = $('.modalBox')
+const eventsContainer = document.querySelector('.events')
+const clearAllEvents = document.querySelector('.clearAll')
+const saveChecklist = document.querySelector('.saveChecklist')
+const eventForm = document.querySelector('#event-form')
 
 let today = new Date();
 let month = today.getMonth();
@@ -15,6 +18,62 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 
 const weekDays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
 
+let eventsArray = [
+    // {
+    //     day: 29,
+    //     month: 3,
+    //     year: 2024,
+    //     events: [
+    //         {
+    //             title: 'Event 1',
+    //             desc: 'lorem ipsum',
+    //             dateFrom: '2024-03-29',
+    //             dateTo: '2024-03-30',
+    //         }
+    //     ]
+    // },
+    // {
+    //     day: 30,
+    //     month: 3,
+    //     year: 2024,
+    //     events: [
+    //         {
+    //             title: 'Event 2',
+    //             desc: 'lorem ipsum w22',
+    //             dateFrom: '2024-03-29',
+    //             dateTo: '2024-03-30',
+    //         }
+    //     ]
+    // }
+]
+
+let eventsArr = [
+    {
+        title: 'Event 1',
+        desc: 'lorem ipsum',
+        dateFrom: '2024-03-29',
+        dateTo: '2024-03-30',
+    },
+    {
+        title: 'Event 2',
+        desc: 'lorem ipsum',
+        dateFrom: '2024-03-29',
+        dateTo: '2024-03-30',
+    },
+    {
+        title: 'Event 1',
+        desc: 'lorem ipsum',
+        dateFrom: '2024-03-29',
+        dateTo: '2024-03-30',
+    },
+    {
+        title: 'Event 2',
+        desc: 'lorem ipsum',
+        dateFrom: '2024-03-29',
+        dateTo: '2024-03-30',
+    }
+]
+
 const createWeekDays = () =>{
     for(let i=0; i <= weekDays.length-1; i++){
         const newDiv = document.createElement('div');
@@ -24,6 +83,7 @@ const createWeekDays = () =>{
     }
 }
 createWeekDays();
+updateEvents();
 
 const createCalendar = () =>{
     const firstDay = new Date(year, month, 1);
@@ -45,13 +105,39 @@ const createCalendar = () =>{
         days += `<div class="day prev-date"> ${prevDays - i + 1} </div>`
     }
 
-    //setting today
+    //setting today: current month days
     for(let i = 1; i <= lastDate; i++){
+
+        //check if event is present on current Day
+        let event = false;
+        eventsArray.forEach((eventObj)=>{
+            //if event found, updaye event to true
+            if(eventObj.day == i && eventObj.month == month + 1 && eventObj.year == year){
+                event = true;
+            }
+
+        })
+
+        //add class today to todays date
         if(i == new Date().getDate() && year == new Date().getFullYear() && month == new Date().getMonth()){
-            days += `<div class="day today"> ${i} </div>`
+            //update Events for today if any
+            //updateEvents(i);
+
+            if(event){
+                days += `<div class="day today event"> ${i} </div>`
+            }
+            else{
+                days += `<div class="day today"> ${i} </div>`
+            }
         }
         else {
-            days += `<div class="day"> ${i} </div>`
+            if(event){
+                days += `<div class="day event"> ${i} </div>`
+            }
+            else{
+                days += `<div class="day"> ${i} </div>`
+            }
+            
         }
     }
 
@@ -90,4 +176,112 @@ todayBtn.addEventListener("click",()=>{
     year = today.getFullYear();
     createCalendar();
 })
+
+//show modal window to add checklist
+$('.addChecklist').click(()=>{
+    eventForm.reset();
+    modal.addClass( "active" );
+})
+
+//hide modal window to add checklist
+$('.close').click(()=>{
+    modal.removeClass( "active" );
+})
+
+function updateEvents(){
+    console.log('updateEvents', eventsArray);
+    let events = '';
+    eventsArray.forEach((event)=>{
+       // if(date = event.day && month+1 == event.month && year == event.year){
+            event.events.forEach((innEvent)=>{
+                events += `
+                <div class="event">
+                    <div class="title">
+                        <i class="fas fa-circle"></i>
+                        <h3 class = "event-title">${innEvent.title}</h3>
+                    </div>
+                    <div class = "event-description">
+                        ${innEvent.desc}
+                    </div>
+                    <div class="eventDate">
+                        ${innEvent.dateFrom} till ${innEvent.dateTo}
+                    </div>
+                </div>`
+            })
+       // }
+    });
+
+    if(events == ""){
+        events = `<div class="no-event">
+                  <h3>No Events</h3>
+                  </div>`;
+    }
+
+    //console.log('events::', events);
+    eventsContainer.innerHTML = events; 
+}
+
+
+clearAllEvents.addEventListener("click",()=>{
+    eventsArray = [];
+    updateEvents();
+})
+
+eventForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    
+    const eventTitle = document.querySelector('.event-name').value,
+     eventDesc = document.querySelector('.event-desc').value,
+     eventDateFrom = document.querySelector('.event-date-from').value,
+     eventDateFromsplit = document.querySelector('.event-date-from').value.split('-'),
+     eventDateTo = document.querySelector('.event-date-to').value
+
+
+// console.log(eventDateFromsplit[0]);
+// console.log(eventDateFromsplit[1]);
+// console.log(eventDateFromsplit[2]);
+// console.log(eventDateTo);
+
+
+    if(eventTitle == "" || eventDateFrom == "" || eventDateTo == ""){
+        alert('Please fill all the fields');
+        return;
+    }
+
+    //create new event
+    const newEvent = {
+        title: eventTitle,
+        desc: eventDesc,
+        dateFrom: eventDateFrom,
+        dateTo: eventDateTo
+    };
+
+    let eventAdded = false;
+
+    if(!eventAdded){
+        eventsArray.push({
+            day: Number(eventDateFromsplit[2]),
+            month: Number(eventDateFromsplit[1]),
+            year: Number(eventDateFromsplit[0]),
+            events: [newEvent]
+        })
+    }
+
+    //close modal window
+    modal.removeClass( "active" );
+    updateEvents();
+
+    //add event class to the date selected
+    const activeDays = Number(eventDateFromsplit[2])
+    const activeDay = document.querySelector(".day");
+
+    console.log(activeDays, '::', activeDay);
+    
+    if(!activeDay.classList.contains('event')){
+        activeDay.classList.add("event")
+    }
+})
+
+
+
 
