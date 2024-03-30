@@ -43,8 +43,8 @@
                                 <input type="text" class="event-name" maxlength="30" placeholder="Event Title">                          
                             </div>
                             <div class="row">
-                                <input type="date" class="event-date-from"  placeholder="Event Date From">
-                                <input type="date" class="event-date-to"  placeholder="Event Date To">
+                                <input type="date" id="dateFrom" class="event-date-from" >
+                                <input type="date" id="dateTo" class="event-date-to"  placeholder="Event Date To">
                             </div>
                             <div class="row">
                                 <span><i class="fa-solid fa-calendar-lines-pen"></i></span>
@@ -67,6 +67,24 @@
     src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
     crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            var dtToday = new Date();
+         
+            var month = dtToday.getMonth() + 1;
+            var day = dtToday.getDate();
+            var year = dtToday.getFullYear();
+            if(month < 10)
+                month = '0' + month.toString();
+            if(day < 10)
+             day = '0' + day.toString();
+            var maxDate = year + '-' + month + '-' + day;
+            $('#dateFrom').attr('min', maxDate);
+            $('#dateTo').attr('min', maxDate);
+        });
+        </script>
+
     <script src="calender.js"></script>
 
 </body>

@@ -124,18 +124,18 @@ const createCalendar = () =>{
             //updateEvents(i);
 
             if(event){
-                days += `<div class="day today event"> ${i} </div>`
+                days += `<div class="day today currMonth ${month} event"> ${i} </div>`
             }
             else{
-                days += `<div class="day today"> ${i} </div>`
+                days += `<div class="day today currMonth ${month}"> ${i} </div>`
             }
         }
         else {
             if(event){
-                days += `<div class="day event"> ${i} </div>`
+                days += `<div class="day event currMonth ${month}"> ${i} </div>`
             }
             else{
-                days += `<div class="day"> ${i} </div>`
+                days += `<div class="day currMonth ${month}"> ${i} </div>`
             }
             
         }
@@ -234,13 +234,14 @@ eventForm.addEventListener('submit', (e)=>{
      eventDesc = document.querySelector('.event-desc').value,
      eventDateFrom = document.querySelector('.event-date-from').value,
      eventDateFromsplit = document.querySelector('.event-date-from').value.split('-'),
-     eventDateTo = document.querySelector('.event-date-to').value
-
+     eventDateTo = document.querySelector('.event-date-to').value,
+     eventDateTosplit = document.querySelector('.event-date-to').value.split('-')
 
 // console.log(eventDateFromsplit[0]);
 // console.log(eventDateFromsplit[1]);
 // console.log(eventDateFromsplit[2]);
-// console.log(eventDateTo);
+
+ console.log(`${eventDateFrom} till ${eventDateTo}`);
 
 
     if(eventTitle == "" || eventDateFrom == "" || eventDateTo == ""){
@@ -256,14 +257,22 @@ eventForm.addEventListener('submit', (e)=>{
         dateTo: eventDateTo
     };
 
-    let eventAdded = false;
 
-    if(!eventAdded){
+    eventsArray.push({
+        day: Number(eventDateFromsplit[2]),
+        month: Number(eventDateFromsplit[1]),
+        year: Number(eventDateFromsplit[0]),
+        events: [newEvent]
+    })
+
+    if(eventDateFrom != eventDateTo){
+        const NoOfDays = Number(eventDateTosplit[2]) - Number(eventDateFromsplit[2])
+    
         eventsArray.push({
-            day: Number(eventDateFromsplit[2]),
-            month: Number(eventDateFromsplit[1]),
-            year: Number(eventDateFromsplit[0]),
-            events: [newEvent]
+        day: Number(eventDateTosplit[2]),
+        month: Number(eventDateTosplit[1]),
+        year: Number(eventDateTosplit[0]),
+        events: [newEvent]
         })
     }
 
@@ -271,11 +280,13 @@ eventForm.addEventListener('submit', (e)=>{
     modal.removeClass( "active" );
     updateEvents();
 
+    console.log(eventsArray)
+
     //add event class to the date selected
     const activeDays = Number(eventDateFromsplit[2])
-    const activeDay = document.querySelector(".day");
-
-    console.log(activeDays, '::', activeDay);
+    const a = document.querySelector(".days");
+    const currMonth = a.querySelectorAll(".currMonth");
+    const activeDay = currMonth[activeDays-1];
     
     if(!activeDay.classList.contains('event')){
         activeDay.classList.add("event")
