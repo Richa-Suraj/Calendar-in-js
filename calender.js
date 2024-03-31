@@ -3,11 +3,13 @@ const date= document.querySelector('.date')
 const daysContainer= document.querySelector('.days')
 const week = document.querySelector('.weekdays')
 const todayBtn = document.querySelector('.todayBtn')
-const modal = $('.modalBox')
+const modal = $('.modalBox');
+const modalLeave = $('.modalLeaveBox')
 const eventsContainer = document.querySelector('.events')
 const clearAllEvents = document.querySelector('.clearAll')
 const saveChecklist = document.querySelector('.saveChecklist')
 const eventForm = document.querySelector('#event-form')
+const leaveForm = document.querySelector('#leave-form')
 
 let today = new Date();
 let month = today.getMonth();
@@ -47,32 +49,57 @@ let eventsArray = [
     // }
 ]
 
-let eventsArr = [
-    {
-        title: 'Event 1',
-        desc: 'lorem ipsum',
-        dateFrom: '2024-03-29',
-        dateTo: '2024-03-30',
-    },
-    {
-        title: 'Event 2',
-        desc: 'lorem ipsum',
-        dateFrom: '2024-03-29',
-        dateTo: '2024-03-30',
-    },
-    {
-        title: 'Event 1',
-        desc: 'lorem ipsum',
-        dateFrom: '2024-03-29',
-        dateTo: '2024-03-30',
-    },
-    {
-        title: 'Event 2',
-        desc: 'lorem ipsum',
-        dateFrom: '2024-03-29',
-        dateTo: '2024-03-30',
-    }
+// let eventsArr = [
+//     {
+//         title: 'Event 1',
+//         desc: 'lorem ipsum',
+//         dateFrom: '2024-03-29',
+//         dateTo: '2024-03-30',
+//     },
+//     {
+//         title: 'Event 2',
+//         desc: 'lorem ipsum',
+//         dateFrom: '2024-03-29',
+//         dateTo: '2024-03-30',
+//     },
+//     {
+//         title: 'Event 1',
+//         desc: 'lorem ipsum',
+//         dateFrom: '2024-03-29',
+//         dateTo: '2024-03-30',
+//     },
+//     {
+//         title: 'Event 2',
+//         desc: 'lorem ipsum',
+//         dateFrom: '2024-03-29',
+//         dateTo: '2024-03-30',
+//     }
+// ]
+let leavesArray = [
+    // {
+    //   reason:"Personal reason",
+    //   leaveDate:"2024-03-29", 
+    // },
+    // {
+    //     reason:"Personal reason",
+    //     leaveDate:"2024-03-31" 
+    // },
 ]
+
+$(function(){
+    var dtToday = new Date();
+ 
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+    if(month < 10)
+        month = '0' + month.toString();
+    if(day < 10)
+     day = '0' + day.toString();
+    var maxDate = year + '-' + month + '-' + day;
+    $('#dateFrom').attr('min', maxDate);
+    $('#dateTo').attr('min', maxDate);
+});
 
 const createWeekDays = () =>{
     for(let i=0; i <= weekDays.length-1; i++){
@@ -102,7 +129,7 @@ const createCalendar = () =>{
 
     //setting last month days
     for(let i = day; i > 0; i-- ){
-        days += `<div class="day prev-date"> ${prevDays - i + 1} </div>`
+        days += `<div class="day prev-date ${month}"> ${prevDays - i + 1} </div>`
     }
 
     //setting today: current month days
@@ -110,10 +137,23 @@ const createCalendar = () =>{
 
         //check if event is present on current Day
         let event = false;
+        let leave = false;
         eventsArray.forEach((eventObj)=>{
             //if event found, updaye event to true
             if(eventObj.day == i && eventObj.month == month + 1 && eventObj.year == year){
                 event = true;
+            }
+
+        })
+
+        leavesArray.forEach((obj)=>{
+
+            const leaveDatesplit = obj.leaveDate.split('-')
+
+            //if event found, updaye event to true
+            if(leaveDatesplit[2] == i && leaveDatesplit[1] == month + 1 && leaveDatesplit[0] == year) 
+            {
+                leave = true;
             }
 
         })
@@ -124,18 +164,34 @@ const createCalendar = () =>{
             //updateEvents(i);
 
             if(event){
-                days += `<div class="day today currMonth ${month} event"> ${i} </div>`
+                if(leave){
+                    days += `<div class="day today currMonth ${month+1} event leave"> ${i} </div>`
+                }else{
+                    days += `<div class="day today currMonth ${month+1} event"> ${i} </div>`
+                }  
             }
             else{
-                days += `<div class="day today currMonth ${month}"> ${i} </div>`
+                if(leave){
+                    days += `<div class="day today currMonth ${month+1} leave"> ${i} </div>`
+                }else{
+                    days += `<div class="day today currMonth ${month+1}"> ${i} </div>`
+                }
             }
         }
         else {
             if(event){
-                days += `<div class="day event currMonth ${month}"> ${i} </div>`
+                if(leave){
+                    days += `<div class="day event currMonth ${month+1} leave"> ${i} </div>`
+                }else{
+                    days += `<div class="day event currMonth ${month+1}"> ${i} </div>`
+                }
             }
             else{
-                days += `<div class="day currMonth ${month}"> ${i} </div>`
+                if(leave){
+                    days += `<div class="day currMonth ${month+1} leave"> ${i} </div>`
+                }else{
+                    days += `<div class="day currMonth ${month+1}"> ${i} </div>`
+                }
             }
             
         }
@@ -143,7 +199,7 @@ const createCalendar = () =>{
 
     //setting next month days
     for(let i = 1; i <= nextDays; i++ ){
-        days += `<div class="day next-date"> ${i} </div>`
+        days += `<div class="day next-date ${month+2}"> ${i} </div>`
     }
     
     daysContainer.innerHTML = days
@@ -183,9 +239,20 @@ $('.addChecklist').click(()=>{
     modal.addClass( "active" );
 })
 
+//show modal window to add leave
+$('.addLeave').click(()=>{
+    leaveForm.reset();
+    modalLeave.addClass( "active" );
+})
+
 //hide modal window to add checklist
 $('.close').click(()=>{
     modal.removeClass( "active" );
+})
+
+//hide modal window to add checklist
+$('.closeLeave').click(()=>{
+    modalLeave.removeClass( "active" );
 })
 
 function updateEvents(){
@@ -222,9 +289,61 @@ function updateEvents(){
 }
 
 
+//function to clear all the events created so far
 clearAllEvents.addEventListener("click",()=>{
     eventsArray = [];
     updateEvents();
+})
+
+leaveForm.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const leaveReason = document.querySelector('.leave-reason').value,
+    leaveDateFrom = document.querySelector('.leave-date-from').value,
+    leaveDateFromsplit = document.querySelector('.leave-date-from').value.split('-'),
+    leaveDateTo = document.querySelector('.leave-date-to').value,
+    leaveDateTosplit = document.querySelector('.leave-date-to').value.split('-')
+
+    if(leaveReason == "" || leaveDateFrom == "" || leaveDateTo == ""){
+        alert('Please fill all the fields');
+        return;
+    }
+
+    let arr=[] 
+
+    for(dt=new Date(leaveDateFrom); dt<=new Date(leaveDateTo); dt.setDate(dt.getDate()+1)){
+        arr.push(new Date(dt).toLocaleDateString('en-CA'));
+    }
+    //console.log('datearray:',arr);
+
+    arr.forEach((element) => {
+       // console.log('element')
+        leavesArray.push({
+            reason: leaveReason,
+            leaveDate: element
+        })
+          
+    });
+
+
+    console.log('leavesArray',leavesArray) 
+    modalLeave.removeClass( "active" );
+
+    let d = document.querySelectorAll(".day")
+
+    //adding leave class to the days
+    d.forEach((day)=>{
+        leavesArray.forEach((element)=>{
+            const a = Number(day.innerHTML);
+            const b = element.leaveDate.split('-')[2];
+
+            const c = element.leaveDate.split('-')[1].replace(/^0|[^\/]0./, '');
+
+            if(a == b && day.classList.value.includes(c)){
+                day.classList.add("leave");
+                //console.log("after:",day);
+            }
+        })
+    })
 })
 
 eventForm.addEventListener('submit', (e)=>{
@@ -237,12 +356,7 @@ eventForm.addEventListener('submit', (e)=>{
      eventDateTo = document.querySelector('.event-date-to').value,
      eventDateTosplit = document.querySelector('.event-date-to').value.split('-')
 
-// console.log(eventDateFromsplit[0]);
-// console.log(eventDateFromsplit[1]);
-// console.log(eventDateFromsplit[2]);
-
  console.log(`${eventDateFrom} till ${eventDateTo}`);
-
 
     if(eventTitle == "" || eventDateFrom == "" || eventDateTo == ""){
         alert('Please fill all the fields');
@@ -287,6 +401,8 @@ eventForm.addEventListener('submit', (e)=>{
     const a = document.querySelector(".days");
     const currMonth = a.querySelectorAll(".currMonth");
     const activeDay = currMonth[activeDays-1];
+
+    console.log(activeDay)
     
     if(!activeDay.classList.contains('event')){
         activeDay.classList.add("event")

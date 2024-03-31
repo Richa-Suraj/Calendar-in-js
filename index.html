@@ -29,7 +29,7 @@
         <div class="right">
             <div class="Checklist">
                 <button class="addChecklist">Add Checklist</button>
-                <button>Add Leave</button>
+                <button class="addLeave">Add Leave</button>
                 <button class="clearAll">Clear All</button>
             </div>
             <div class="modalBox">
@@ -57,6 +57,31 @@
                     </div>
                 </div>
             </div>
+            <div class="modalLeaveBox">
+                <div class="modalContent">
+                    <span class="closeLeave"><i class="fas fa-times-circle"></i></span>
+                    <div class="formHolder">
+                        <h2>Add Leave</h2>
+                        <form action="" id = "leave-form">
+                            <div class="row">
+                                <span><i class="fa-solid fa-calendar-lines-pen"></i></span>
+                                <input type="text" class="leave-reason" maxlength="30" placeholder="Reason for Leave">                          
+                            </div>
+                            <div class="row">
+                                <input type="date" id="dateFrom" class="leave-date-from" >
+                                <input type="date" id="dateTo" class="leave-date-to" >
+                            </div>
+                            <!-- <div class="row">
+                                <span><i class="fa-solid fa-calendar-lines-pen"></i></span>
+                                <textarea class="event-desc" maxlength="100" rows="4" cols="50" placeholder="Event Description"></textarea>
+                            </div> -->
+                            <div class="row action">
+                                <button type="submit" class="saveLeave">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="events">
             </div>
         </div>
@@ -67,23 +92,6 @@
     src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
     crossorigin="anonymous"></script>
-
-    <script type="text/javascript">
-        $(function(){
-            var dtToday = new Date();
-         
-            var month = dtToday.getMonth() + 1;
-            var day = dtToday.getDate();
-            var year = dtToday.getFullYear();
-            if(month < 10)
-                month = '0' + month.toString();
-            if(day < 10)
-             day = '0' + day.toString();
-            var maxDate = year + '-' + month + '-' + day;
-            $('#dateFrom').attr('min', maxDate);
-            $('#dateTo').attr('min', maxDate);
-        });
-        </script>
 
     <script src="calender.js"></script>
 
